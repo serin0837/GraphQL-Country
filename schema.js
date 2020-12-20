@@ -51,31 +51,27 @@ const RootQuery = new GraphQLObjectType({
                 name:{ type: GraphQLString}
             },
             resolve(parent, args){
-                return axios.get(`https://restcountries.eu/rest/v2/name/${args.name}`)
-                .then(res => res.data);
+                return axios.get("https://restcountries.eu/rest/v2/name/"+ args.name)
+                .then(res => console.log(res.data)) //in graphiql error but console check okay //but can not fileter 
             }
         },
-        // rockets:{
-        //     type: new GraphQLList(RocketType),
-        //     resolve(parent, args){
-        //         return axios.get("https://api.spacexdata.com/v3/rockets")
-        //         .then(res => res.data)
-        //     }
-        // },
-        //single launch
-        // rocket: {
-        //     type: RocketType,
-        //     args:{
-        //         id:{ type: GraphQLInt}
-        //     },
-        //     resolve(parent, args){
-        //         return axios.get(`https://api.spacexdata.com/v3/rockets/${args.id}`)
-        //         .then(res => res.data);
-        //     }
-        // }
+        region: {
+            type: CountryType,
+            args:{
+                region:{ type: GraphQLString}
+            },
+            resolve(parent, args){
+                return axios.get(`https://restcountries.eu/rest/v2/region/${args.region}`)// can not show only with country name something like that
+                .then(res => console.log(res.data));
+            }
+        },
     }
 })
 
+
+//what data?
+//all country // one country information// country depend on region // country depend on language
+//front end - select the country you have been and add in mongoDB// 
 
 
 module.exports =  new GraphQLSchema({
