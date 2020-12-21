@@ -1,5 +1,5 @@
 const axios = require("axios");
-const {GraphQLSchema,GraphQLObjectType, GraphQLInt, GraphQLString,GraphQLBoolean,GraphQLList} = require("graphql")
+const {GraphQLSchema,GraphQLObjectType, GraphQLInt, GraphQLString,GraphQLBoolean,GraphQLList,GraphQLID} = require("graphql")
 
 
 //Country
@@ -21,6 +21,7 @@ const CountryType = new GraphQLObjectType({
         //     "nativeName": "Español"
         // }],
         flag: { type: GraphQLString},
+        alpha2Code: {type: GraphQLString}
     })
 })
 
@@ -48,11 +49,11 @@ const RootQuery = new GraphQLObjectType({
         country: {
             type: CountryType,
             args:{
-                name:{ type: GraphQLString}
+                alpha2Code:{ type: GraphQLString}
             },
             resolve(parent, args){
-                return axios.get("https://restcountries.eu/rest/v2/name/"+ args.name)
-                .then(res => console.log(res.data)) //in graphiql error but console check okay //but can not fileter 
+                return axios.get(`https://restcountries.eu/rest/v2/alpha/${args.alpha2Code}`)
+                .then(res => res.data) //in graphiql error but console check okay //but can not fileter 
             }
         },
         region: {
