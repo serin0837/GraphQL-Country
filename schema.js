@@ -1,5 +1,6 @@
 const axios = require("axios");
-const {GraphQLSchema,GraphQLObjectType, GraphQLInt, GraphQLString,GraphQLBoolean,GraphQLList,GraphQLID} = require("graphql")
+
+const {GraphQLSchema,GraphQLObjectType, GraphQLInt, GraphQLString,GraphQLBoolean,GraphQLList,GraphQLID,Gra} = require("graphql")
 
 
 //Country
@@ -13,27 +14,20 @@ const CountryType = new GraphQLObjectType({
         population: { type: GraphQLInt},
         // latlng : {type: RocketType}array type how to?
         area: { type: GraphQLInt},
-        // timezones: ["UTC-05:00"],
-        // "languages": [{
-        //     "iso639_1": "es",
-        //     "iso639_2": "spa",
-        //     "name": "Spanish",
-        //     "nativeName": "Español"
-        // }],
+        languages: {  type: LanguageType},
         flag: { type: GraphQLString},
         alpha2Code: {type: GraphQLString}
     })
 })
+const LanguageType = new GraphQLObjectType({
+    name: "Language",
+    fields:()=>({
+        iso639_1: {type:GraphQLString},
+        name: {type:GraphQLString},
+        nativeName: {type:GraphQLString}
+    })
 
-// const RocketType = new GraphQLObjectType({
-//     name:"Rocket",
-//     fields:()=>({
-//         rocket_id: { type: GraphQLString},
-//         rocket_name: { type: GraphQLString},
-//         rocket_type: { type: GraphQLString},
-//     })
-// })
-
+})
 //root query
 const RootQuery = new GraphQLObjectType({
     name:"RootQueryType",
@@ -56,25 +50,62 @@ const RootQuery = new GraphQLObjectType({
                 .then(res => res.data) //in graphiql error but console check okay //but can not fileter 
             }
         },
+        language: {
+            type: new GraphQLList(LanguageType),
+            args:{
+                iso639_1:{ type: GraphQLString}
+            },
+            resolve(parent, args){
+                return axios.get(`https://restcountries.eu/rest/v2/lang/${args.iso639_1}`)
+                .then(res => res.data) //in graphiql error but console check okay /
+            }
+        },
         region: {
-            type: CountryType,
+            type: new GraphQLList(CountryType),
             args:{
                 region:{ type: GraphQLString}
             },
             resolve(parent, args){
-                return axios.get(`https://restcountries.eu/rest/v2/region/${args.region}`)// can not show only with country name something like that
-                .then(res => console.log(res.data));
+                return axios.get(`https://restcountries.eu/rest/v2/region/${args.region}`)
+                .then(res => res.data) 
             }
         },
     }
 })
 
 
-//what data?
-//all country // one country information// country depend on region // country depend on language
-//front end - select the country you have been and add in mongoDB// 
-
-
 module.exports =  new GraphQLSchema({
     query : RootQuery
 })
+
+
+
+
+    // "languages": [
+    //     {
+    //         "iso639_1": "sq",
+    //         "iso639_2": "sqi",
+    //         "name": "Albanian",
+    //         "nativeName": "Shqip"
+    //     }
+    // ],
+    // "languages": [
+    //     {
+    //         "iso639_1": "ps",
+    //         "iso639_2": "pus",
+    //         "name": "Pashto",
+    //         "nativeName": "پښتو"
+    //     },
+    //     {
+    //         "iso639_1": "uz",
+    //         "iso639_2": "uzb",
+    //         "name": "Uzbek",
+    //         "nativeName": "Oʻzbek"
+    //     },
+    //     {
+    //         "iso639_1": "tk",
+    //         "iso639_2": "tuk",
+    //         "name": "Turkmen",
+    //         "nativeName": "Türkmen"
+    //     }
+    // ],
