@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const {GraphQLSchema,GraphQLObjectType, GraphQLInt, GraphQLString,GraphQLBoolean,GraphQLList,GraphQLID,Gra} = require("graphql")
+const {GraphQLSchema,GraphQLObjectType,GraphQLFloat, GraphQLInt, GraphQLString,GraphQLBoolean,GraphQLList,GraphQLID,Gra} = require("graphql")
 
 
 //Country
@@ -13,21 +13,23 @@ const CountryType = new GraphQLObjectType({
         subregion: { type: GraphQLString},
         population: { type: GraphQLInt},
         // latlng : {type: RocketType}array type how to?
-        area: { type: GraphQLInt},
-        languages: {  type: LanguageType},
+        area: { type: GraphQLFloat},
         flag: { type: GraphQLString},
         alpha2Code: {type: GraphQLString}
+         // languages: {  type: LanguageType},
     })
 })
-const LanguageType = new GraphQLObjectType({
-    name: "Language",
-    fields:()=>({
-        iso639_1: {type:GraphQLString},
-        name: {type:GraphQLString},
-        nativeName: {type:GraphQLString}
-    })
 
-})
+
+// const LanguageType = new GraphQLObjectType({
+//     name: "Language",
+//     fields:()=>({
+//         iso639_1: {type:GraphQLString},
+//         name: {type:GraphQLString},
+//         nativeName: {type:GraphQLString}
+//     })
+
+// })
 //root query
 const RootQuery = new GraphQLObjectType({
     name:"RootQueryType",
@@ -50,16 +52,16 @@ const RootQuery = new GraphQLObjectType({
                 .then(res => res.data) //in graphiql error but console check okay //but can not fileter 
             }
         },
-        language: {
-            type: new GraphQLList(LanguageType),
-            args:{
-                iso639_1:{ type: GraphQLString}
-            },
-            resolve(parent, args){
-                return axios.get(`https://restcountries.eu/rest/v2/lang/${args.iso639_1}`)
-                .then(res => res.data) //in graphiql error but console check okay /
-            }
-        },
+        // language: {
+        //     type: new GraphQLList(LanguageType),
+        //     args:{
+        //         iso639_1:{ type: GraphQLString}
+        //     },
+        //     resolve(parent, args){
+        //         return axios.get(`https://restcountries.eu/rest/v2/lang/${args.iso639_1}`)
+        //         .then(res => res.data) //in graphiql error but console check okay /
+        //     }
+        // },
         region: {
             type: new GraphQLList(CountryType),
             args:{
