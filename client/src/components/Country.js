@@ -4,7 +4,7 @@ const Country = (props) => {
     console.log(props.country,"<-props")
     return (
         <div>
-            country
+            <h2>{props.country.name}</h2>
         </div>
     );
 };

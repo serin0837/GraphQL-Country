@@ -33,7 +33,7 @@ class CountryList extends Component {
                 return <div>
                   {
                     data.countries.map(country => {
-                      <Country key ={country.alpha2Code} country ={country}/>
+                      return <Country key ={country.alpha2Code} country ={country}/>
                     })
                   }
                 </div>
